@@ -25,12 +25,14 @@ recorded on a shared, tamper-evident ledger that all participants can audit.
 
 ## How it works
 
-```
- synthetic meters        forecast            market              chain
- ────────────────    ───────────────    ────────────────    ───────────────
- per-house hourly    hourly-mean net    uniform-price        GridLedger.sol
- generation and  ─▶  per house, per  ─▶ double auction   ─▶  records each
- consumption         hour of the day    (buyers vs sellers)  trade + positions
+```mermaid
+flowchart LR
+    M["Synthetic meters<br/>per-house hourly<br/>generation &amp; consumption"] --> F["Forecast<br/>hourly-mean net<br/>per house &amp; hour"]
+    F --> O["Build orders<br/>deficit → bid below retail<br/>surplus → ask above feed-in"]
+    O --> A{"Double auction<br/>bid ≥ ask ?"}
+    A -->|matched| T["Trades at one<br/>clearing price"]
+    A -->|unmatched| G["Grid import / export"]
+    T --> S["GridLedger.sol<br/>settle in milli-kWh &amp; cents<br/>running position per house"]
 ```
 
 1. **Meters (`generate.py`).** Synthetic, deterministic per-house hourly
