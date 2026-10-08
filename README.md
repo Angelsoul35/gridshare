@@ -188,4 +188,4 @@ guards). Tests that deploy the contract carry the `chain` marker.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+[MIT](LICENSE) © Angelo David Padilla Romero
