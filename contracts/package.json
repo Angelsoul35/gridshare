@@ -1,0 +1,9 @@
+{
+  "name": "gridshare-contracts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GridLedger Solidity contract and compiler for GridShare.",
+  "license": "MIT",
+  "scripts": { "compile": "node compile.js" },
+  "dependencies": { "solc": "0.8.24" }
+}

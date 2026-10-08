@@ -1,0 +1,201 @@
+{
+  "contractName": "GridLedger",
+  "solcVersion": "0.8.24+commit.e11b9ed9.Emscripten.clang",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "NotOperator",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "SameParty",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ZeroEnergy",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ZeroParty",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOperator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOperator",
+          "type": "address"
+        }
+      ],
+      "name": "OperatorTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "buyer",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "seller",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "kWhMilli",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "priceCents",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "hour",
+          "type": "uint256"
+        }
+      ],
+      "name": "TradeSettled",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "operator",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "party",
+          "type": "bytes32"
+        }
+      ],
+      "name": "positionOf",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "netKwhMilli",
+          "type": "int256"
+        },
+        {
+          "internalType": "int256",
+          "name": "netCents",
+          "type": "int256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "trades",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "buyer",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "seller",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "kWhMilli",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceCents",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "hour",
+          "type": "uint256"
+        }
+      ],
+      "name": "settle",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalTrades",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOperator",
+          "type": "address"
+        }
+      ],
+      "name": "transferOperator",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561000f575f80fd5b505f80546001600160a01b0319163390811782556040519091907f74da04524d50c64947f5dd5381ef1a4dca5cba8ed1d816243f9e48aa0b5617ed908290a36104f68061005b5f395ff3fe608060405234801561000f575f80fd5b5060043610610055575f3560e01c806329605e7714610059578063570ca7351461006e5780639fedf6161461009d578063a529b09e146100ff578063e275c99714610120575b5f80fd5b61006c610067366004610395565b610129565b005b5f54610080906001600160a01b031681565b6040516001600160a01b0390911681526020015b60405180910390f35b6100e46100ab3660046103c2565b5f908152600260208181526040928390208351606081018552815480825260018301549382018490529190930154929093018290529192565b60408051938452602084019290925290820152606001610094565b61011261010d3660046103d9565b6101c9565b604051908152602001610094565b61011260015481565b5f546001600160a01b0316331461015357604051631f0853c160e21b815260040160405180910390fd5b6001600160a01b03811661017a576040516360e58be760e11b815260040160405180910390fd5b5f80546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f74da04524d50c64947f5dd5381ef1a4dca5cba8ed1d816243f9e48aa0b5617ed9190a35050565b5f80546001600160a01b031633146101f457604051631f0853c160e21b815260040160405180910390fd5b8515806101ff575084155b1561021d576040516360e58be760e11b815260040160405180910390fd5b84860361023c5760405162c274ff60e21b815260040160405180910390fd5b835f0361025c576040516301e734ad60e51b815260040160405180910390fd5b5f6103e861026a8587610424565b6102749190610441565b5f87815260026020526040812080549293509187918391610296908490610460565b9250508190555081816001015f8282546102b09190610486565b925050819055506001816002015f8282546102cb91906104ad565b90915550505f8881526002602052604081208054909188918391906102f1908490610486565b9250508190555082816001015f82825461030b9190610460565b925050819055506001816002015f82825461032691906104ad565b9091555050600180549450805f61033d82886104ad565b9091555050604080518881526020810188905290810186905288908a9086907f948041a5e328b74a3f7710aef457d435609c1189cce38637f4bbbb054f013cd69060600160405180910390a450505095945050505050565b5f602082840312156103a5575f80fd5b81356001600160a01b03811681146103bb575f80fd5b9392505050565b5f602082840312156103d2575f80fd5b5035919050565b5f805f805f60a086880312156103ed575f80fd5b505083359560208501359550604085013594606081013594506080013592509050565b634e487b7160e01b5f52601160045260245ffd5b808202811582820484141761043b5761043b610410565b92915050565b5f8261045b57634e487b7160e01b5f52601260045260245ffd5b500490565b8181035f83128015838313168383128216171561047f5761047f610410565b5092915050565b8082018281125f8312801582168215821617156104a5576104a5610410565b505092915050565b8082018082111561043b5761043b61041056fea264697066735822122028c60e0defc93e96cb9d10878a98a441463705ae8ffba7fbbb883251cdea709364736f6c63430008180033"
+}
