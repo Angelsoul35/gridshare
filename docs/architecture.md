@@ -21,23 +21,11 @@ data flows through them, and the boundaries between them.
 
 ## Data flow for one hour
 
-```
-┌──────────────┐   net = gen − cons   ┌──────────────┐
-│  history     │ ───────────────────▶ │  orders      │
-│ (synthetic)  │   per house, hour     │ bids + asks  │
-└──────────────┘                       └──────┬───────┘
-                                               │  clear_market(...)
-                                               ▼
-                                        ┌──────────────┐
-                                        │ MarketResult │
-                                        │ trades, price│
-                                        └──────┬───────┘
-                                               │  for each trade: settle(...)
-                                               ▼
-                                        ┌──────────────┐
-                                        │  GridLedger  │
-                                        │  positions   │
-                                        └──────────────┘
+```mermaid
+flowchart TD
+    A[(History<br/>synthetic)] -->|"net = gen − cons<br/>per house, hour"| B[Orders<br/>bids + asks]
+    B -->|clear_market| C[MarketResult<br/>trades, price]
+    C -->|"for each trade: settle"| D[(GridLedger<br/>positions)]
 ```
 
 1. `GridShareService` reads the simulated day's history and turns each house's

@@ -2,9 +2,12 @@
 
 ## Las capas, de principio a fin
 
-```
- medidores  →  pronóstico  →  mercado  →  orquestación  →  cadena
- generate.py   forecast.py    market.py   service.py       chain/ + contracts/
+```mermaid
+flowchart LR
+    A[Medidores<br/>generate.py] --> B[Pronóstico<br/>forecast.py]
+    B --> C[Mercado<br/>market.py]
+    C --> D[Orquestación<br/>service.py]
+    D --> E[Cadena<br/>chain/ + contracts/]
 ```
 
 1. **Medidores (`generate.py`).** Genera datos sintéticos y deterministas de
