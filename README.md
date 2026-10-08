@@ -11,6 +11,12 @@ mechanism with real economic meaning, and a smart contract that keeps an
 auditable record of who gave energy to whom and for how much — without putting
 any personal data on-chain.
 
+[![CI](https://img.shields.io/badge/CI-GitHub%20Actions-blue)](.github/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue)](pyproject.toml)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+---
+
 ## Why it matters
 
 When several houses on the same street have solar panels, selling a surplus
