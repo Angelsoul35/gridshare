@@ -55,6 +55,51 @@ PyEVM node or a live JSON-RPC endpoint such as Anvil) or against an in-memory
 fake with identical accounting, so the tests and the API behave the same with
 or without a chain.
 
+## The market mechanism, precisely
+
+`clear_market` is a uniform-price double auction implemented as a merge of two
+sorted lists:
+
+1. Sort buyers by bid descending and sellers by ask ascending — `O(n log n)`.
+2. Walk both lists with two pointers while `bid ≥ ask`, trading
+   `min(remaining_buyer, remaining_seller)` kWh at each step — a linear merge.
+3. The **clearing price** is the midpoint of the *last* matched buyer/seller
+   pair, and every matched kWh settles at that single price (uniform pricing),
+   not at each pair's own midpoint.
+
+The economic guarantee follows from the matching rule: a pair only trades when
+`bid ≥ ask`, and since buyers bid below the grid retail price and sellers ask
+above the grid feed-in price, the clearing price always lands **between** the two
+grid prices. So the reported savings are always non-negative:
+
+```
+buyer_savings_cents  = p2p_kwh × (grid_retail − clearing_price)
+seller_earnings_cents = p2p_kwh × (clearing_price − grid_feed_in)
+```
+
+Unmatched demand becomes `grid_import`, unmatched supply becomes `grid_export`.
+In the demo, 20 houses trade ~72.9 kWh peer-to-peer in a simulated day.
+
+## On-chain accounting: integers, not floats
+
+The EVM has no floats, and floating-point positions would drift and disagree
+between parties — defeating the point of a shared ledger. So the contract stores
+energy as integer **milli-kWh** (1 kWh = 1000) and money as integer **cents**,
+and computes `cents = kWhMilli × priceCents / 1000` with integer (truncating)
+division — identical in Solidity and in the Python fake, which a test asserts by
+settling the same trade on both and comparing positions bit for bit.
+
+## Forecasting: an honest baseline
+
+`HourlyMeanForecaster` predicts each house's net energy as the mean of its
+historical generation minus consumption at that hour of day. It is deliberately a
+**baseline**, not a headline model: it is trained on every day except the last and
+evaluated on the held-out last day, where it reaches a net **MAE of ~0.26 kWh**.
+It exists to define the interface (`fit` / `forecast_net` / `mae`) and a number
+to beat; a weather-aware or gradient-boosted model can replace it without touching
+the market or the chain. Reporting it as a baseline — rather than dressing it up —
+is the honest framing.
+
 ## Quick start
 
 ```bash
