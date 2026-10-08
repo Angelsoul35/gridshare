@@ -58,8 +58,11 @@ def clear_market(
     while bi < len(bids) and ai < len(asks) and bids[bi].price >= asks[ai].price:
         qty = min(b_rem, a_rem)
         clearing_price = round((bids[bi].price + asks[ai].price) / 2, 2)
-        trades.append(Trade(buyer=bids[bi].house, seller=asks[ai].house, kwh=round(qty, 4),
-                            price=clearing_price))
+        trades.append(
+            Trade(
+                buyer=bids[bi].house, seller=asks[ai].house, kwh=round(qty, 4), price=clearing_price
+            )
+        )
         b_rem -= qty
         a_rem -= qty
         if b_rem <= 1e-9:
@@ -83,7 +86,11 @@ def clear_market(
     seller_earnings = round(p2p_kwh * (price - grid_sell_cents), 2)
 
     return MarketResult(
-        trades=trades, clearing_price=price if trades else None, p2p_kwh=p2p_kwh,
-        grid_import_kwh=grid_import, grid_export_kwh=grid_export,
-        buyer_savings_cents=buyer_savings, seller_earnings_cents=seller_earnings,
+        trades=trades,
+        clearing_price=price if trades else None,
+        p2p_kwh=p2p_kwh,
+        grid_import_kwh=grid_import,
+        grid_export_kwh=grid_export,
+        buyer_savings_cents=buyer_savings,
+        seller_earnings_cents=seller_earnings,
     )

@@ -55,11 +55,13 @@ class GridShareService:
             net = float(row["net"])
             margin = self._margin(row["house"])
             if net < -1e-6:  # deficit -> buyer, bids below the grid retail price
-                bids.append(Order(house=row["house"], kwh=-net,
-                                  price=self.settings.grid_buy_cents - margin))
+                bids.append(
+                    Order(house=row["house"], kwh=-net, price=self.settings.grid_buy_cents - margin)
+                )
             elif net > 1e-6:  # surplus -> seller, asks above the grid feed-in price
-                asks.append(Order(house=row["house"], kwh=net,
-                                  price=self.settings.grid_sell_cents + margin))
+                asks.append(
+                    Order(house=row["house"], kwh=net, price=self.settings.grid_sell_cents + margin)
+                )
         return bids, asks
 
     def simulate_hour(self, hour: int, settle: bool = True) -> dict:
@@ -75,8 +77,11 @@ class GridShareService:
                 if kwh_milli <= 0:
                     continue
                 self.ledger.settle(
-                    house_id(trade.buyer), house_id(trade.seller),
-                    kwh_milli, int(round(trade.price)), hour,
+                    house_id(trade.buyer),
+                    house_id(trade.seller),
+                    kwh_milli,
+                    int(round(trade.price)),
+                    hour,
                 )
                 settled += 1
 

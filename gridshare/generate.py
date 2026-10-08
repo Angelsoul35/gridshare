@@ -56,7 +56,13 @@ def make_history(houses: list[dict], days: int = 14, seed: int = 7) -> pd.DataFr
                 gen = round(house["pv_capacity_kwh"] * solar, 4)
                 cons = round(_consumption(hour, house["base_load_kwh"], rng), 4)
                 rows.append(
-                    {"house": house["name"], "day": day, "hour": hour,
-                     "generation": gen, "consumption": cons, "net": round(gen - cons, 4)}
+                    {
+                        "house": house["name"],
+                        "day": day,
+                        "hour": hour,
+                        "generation": gen,
+                        "consumption": cons,
+                        "net": round(gen - cons, 4),
+                    }
                 )
     return pd.DataFrame(rows)

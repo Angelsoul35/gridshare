@@ -34,14 +34,18 @@ def demo() -> None:
     print("3) A sample midday hour (high solar):")
     noon = next(h for h in day["hours"] if h["hour"] == 12)
     print(f"   clearing price: {noon['clearing_price_cents']} cents/kWh")
-    print(f"   p2p {noon['p2p_kwh']:.2f} kWh in {len(noon['trades'])} trades, "
-          f"{noon['settled_on_chain']} settled on-chain")
+    print(
+        f"   p2p {noon['p2p_kwh']:.2f} kWh in {len(noon['trades'])} trades, "
+        f"{noon['settled_on_chain']} settled on-chain"
+    )
 
     print("4) On-chain positions (net kWh) for the first two houses:")
     for house in service.houses[:2]:
         pos = ledger.position_of(house_id(house["name"]))
-        print(f"   {house['name']}: net {pos.net_kwh_milli / 1000:+.2f} kWh, "
-              f"net {pos.net_cents / 100:+.2f} over {pos.trades} trades")
+        print(
+            f"   {house['name']}: net {pos.net_kwh_milli / 1000:+.2f} kWh, "
+            f"net {pos.net_cents / 100:+.2f} over {pos.trades} trades"
+        )
     print(f"   total trades on-chain: {ledger.total_trades()}")
 
 
