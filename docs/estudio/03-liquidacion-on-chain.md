@@ -92,4 +92,4 @@ fake.
 - Enteros (mili-kWh y céntimos) → contabilidad **exacta** y compatible con la EVM.
 - Identificadores `bytes32` → **sin datos personales** en la cadena.
 - `onlyOperator` + guardas → nadie escribe posiciones falsas.
-- El fake, validado contra el contrato, mantiene las pruebas rápidas y honestas.
+- El fake, validado contra el contrato, mantiene las pruebas rápidas y fieles al contrato.

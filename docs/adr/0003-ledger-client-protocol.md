@@ -36,7 +36,7 @@ concrete client.
 - **Fast tests.** Market and service tests use the fake and need no node. A
   separate set of `chain`-marked tests deploys the real contract to an in-memory
   PyEVM node.
-- **The fake stays honest.** A dedicated test settles the same trade on both the
+- **The fake stays faithful.** A dedicated test settles the same trade on both the
   real contract and the fake and asserts their positions match, so the fake
   cannot drift away from the contract's behaviour.
 - **Trade-off.** Two implementations must be kept in step. The equivalence test

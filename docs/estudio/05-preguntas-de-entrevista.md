@@ -28,7 +28,7 @@ ambos.
 **¿Por qué un modelo tan simple (media por hora)?**
 Porque es una **línea base** clara y explicable. Define la interfaz y da una
 referencia que cualquier modelo más complejo debe superar. En ingeniería, primero
-una línea base honesta y luego mejoras medibles.
+una línea base clara y luego mejoras medibles.
 
 **¿Cómo mides el error y por qué MAE?**
 Con el error absoluto medio, en kWh, así que es interpretable directamente ("nos

@@ -44,7 +44,7 @@ flowchart LR
 1. **Meters (`generate.py`).** Synthetic, deterministic per-house hourly
    generation and consumption. Half the houses have panels (prosumers); the
    rest only consume.
-2. **Forecast (`forecast.py`).** A simple, honest baseline: the mean generation
+2. **Forecast (`forecast.py`).** A simple, transparent baseline: the mean generation
    and consumption for each house at each hour of the day. It is easy to explain
    and a fair starting point; a stronger model can replace it behind the same
    interface.
@@ -97,16 +97,16 @@ and computes `cents = kWhMilli × priceCents / 1000` with integer (truncating)
 division — identical in Solidity and in the Python fake, which a test asserts by
 settling the same trade on both and comparing positions bit for bit.
 
-## Forecasting: an honest baseline
+## Forecasting: a transparent baseline
 
 `HourlyMeanForecaster` predicts each house's net energy as the mean of its
 historical generation minus consumption at that hour of day. It is deliberately a
 **baseline**, not a headline model: it is trained on every day except the last and
 evaluated on the held-out last day, where it reaches a net **MAE of ~0.26 kWh**.
-It exists to define the interface (`fit` / `forecast_net` / `mae`) and a number
-to beat; a weather-aware or gradient-boosted model can replace it without touching
-the market or the chain. Reporting it as a baseline — rather than dressing it up —
-is the honest framing.
+It exists to define the interface (`fit` / `forecast_net` / `mae`) and a clear
+reference point; a weather-aware or gradient-boosted model can replace it without
+touching the market or the chain. Reporting it plainly as a baseline, with the
+interface ready for a stronger model to drop in, is the design intent.
 
 ## Quick start
 
@@ -169,6 +169,38 @@ Settings load from environment variables with the `GS_` prefix (see
 Never commit a real private key. Leave `GS_CHAIN_PRIVATE_KEY` empty for local
 runs; the API and tests use an in-memory EVM or the in-memory fake.
 
+## Validated on real meter data
+
+The synthetic generator is deterministic, which is ideal for tests. To show the
+mechanism holds up on data no one designed, GridShare also runs on a **real**
+neighbourhood: real hourly household consumption from the Low Carbon London
+smart-meter trial, and a real solar capacity-factor profile measured from German grid
+PV output (50Hertz zone, a summer fortnight), scaled to each prosumer's panels. The
+arrays are vendored under `datasets/neighbourhood_real.npz` (see `datasets/README.md`
+for provenance); `gridshare.real_data.load_real_neighbourhood` assembles them into the
+same `(houses, history)` the market consumes, which `GridShareService` now accepts
+directly. Run `python -m gridshare.real_benchmark`:
+
+```
+neighbourhood      : 20 houses, 10 with panels, 14 real days
+grid tariff        : buy 80c / sell 20c per kWh
+peer-to-peer traded: 71.5 kWh over the day
+self-sufficiency   : 27.9% of demand met locally
+clearing price     : 48.8c avg (all within the 20-80c spread: True)
+buyer savings      : 23.05 $ vs the grid price
+seller earnings    : 19.85 $ vs the feed-in
+```
+
+Because GridShare's market is deterministic (a double auction and tariff arithmetic,
+not a trained model), there is nothing to over/underfit; the real-data question is
+whether the mechanism produces sound, worthwhile outcomes on real meters. It does:
+surplus solar from real prosumers clears into real neighbours' demand at a price
+strictly inside the grid's buy/sell spread, so sellers earn more than the feed-in rate
+and buyers pay less than retail — both sides ahead, with less energy drawn from the
+wider grid. `tests/test_real_benchmark.py` asserts these invariants on the real
+neighbourhood (the accounting identity, prices inside the spread, both-sides-win) and
+that the economics respond to the inputs (closing the spread removes the advantage).
+
 ## Testing
 
 ```bash
@@ -176,9 +208,11 @@ ruff check gridshare tests
 pytest --cov=gridshare --cov-report=term-missing --cov-fail-under=80
 ```
 
-The suite covers the forecaster, the market mechanism, the HTTP API, and the
+The suite covers the forecaster, the market mechanism, the HTTP API, the
 contract (deployed to an in-memory EVM, including the operator and input
-guards). Tests that deploy the contract carry the `chain` marker.
+guards), and the **real-data benchmark** (the real neighbourhood loader, the
+market invariants on real meters, the no-spread control, and the fetch path).
+Tests that deploy the contract carry the `chain` marker.
 
 ## Documentation
 

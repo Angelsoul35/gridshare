@@ -73,6 +73,48 @@ nombre de la casa) para que las pruebas den siempre el mismo resultado.
 - `buyer_savings_cents` / `seller_earnings_cents`: el ahorro de cada lado frente
   a comerciar solo con la red.
 
+## Validación con datos reales (consumo de Londres + solar de Alemania)
+
+El mercado es **determinista** (una subasta doble y aritmética de tarifa, no un
+modelo entrenado), así que aquí no hay "exactitud" ni over/underfitting que medir. La
+pregunta correcta es otra: *¿el mecanismo produce resultados sensatos y valiosos sobre
+datos reales, no solo sobre el generador sintético?* Para responderla, GridShare corre
+sobre un vecindario **real**:
+
+- **Consumo:** consumo horario real de hogares del ensayo Low Carbon London
+  (contadores inteligentes), un hogar real por casa.
+- **Generación:** un **factor de capacidad solar** real (0 de noche, ≈1 al mediodía
+  solar) medido de la producción fotovoltaica de la red alemana, escalado por el tamaño
+  de panel de cada prosumidor.
+
+Con `python -m gridshare.real_benchmark`:
+
+```
+vecindario         : 20 casas, 10 con paneles, 14 días reales
+tarifa de red      : compra 80c / venta 20c por kWh
+comercio P2P       : 71,5 kWh en el día
+autosuficiencia    : 27,9 % de la demanda cubierta localmente
+precio de equilibrio: 48,8c de media (todos dentro del rango 20-80c)
+ahorro comprador   : 23,05 $ frente al precio de red
+ganancia vendedor  : 19,85 $ frente al feed-in
+```
+
+### La invariante económica, comprobada sobre dato real
+
+La propiedad que hace útil a un mercado local es que **las dos partes ganan**: el
+precio de equilibrio cae *dentro* del margen entre el feed-in (lo que paga la red por
+exportar, 20c) y el retail (lo que cobra la red por importar, 80c). Entonces:
+
+- el **vendedor** cobra `precio − feed-in > 0` por cada kWh vendido localmente;
+- el **comprador** paga `retail − precio > 0` menos que a la red.
+
+`tests/test_real_benchmark.py` lo comprueba de forma **funcional** sobre el vecindario
+real: la identidad contable (`net = generación − consumo`), que todo precio de
+equilibrio queda dentro del rango, y que ambos ahorros son positivos. Y lo prueba por
+contraste (estilo mutación): si se **cierra el margen** (compra = venta), la ventaja
+desaparece y los ahorros caen a cero — demostrando que el valor viene del margen, no de
+un artefacto del código.
+
 ## Para fijar la idea
 
 - La subasta doble es **justa dentro de la hora**: todos pagan o cobran lo mismo.
@@ -80,3 +122,6 @@ nombre de la casa) para que las pruebas den siempre el mismo resultado.
   por eso las dos partes ganan.
 - `clear_market` es una **función pura**: mismas entradas, mismas salidas. Eso la
   hace fácil de probar y de reemplazar por otro mecanismo más adelante.
+- Al ser determinista, "datos reales" aquí significa **correr el mercado sobre perfiles
+  reales** de consumo y generación y comprobar que los resultados son correctos y
+  valiosos, no medir una exactitud de modelo.

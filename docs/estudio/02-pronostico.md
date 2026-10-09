@@ -13,7 +13,7 @@ consumo) para cada hora.
 ## El modelo base: media por hora
 
 El modelo está en `forecast.py` y se llama `HourlyMeanForecaster`. Es a
-propósito simple y honesto:
+propósito simple y transparente:
 
 1. En el entrenamiento (`fit`), agrupa el histórico por `(casa, hora_del_día)` y
    calcula la **media** de generación y de consumo.
@@ -57,7 +57,7 @@ es razonable para un modelo tan simple.
 
 `service.py` entrena el pronosticador con todos los días **menos el último** y
 usa el último día como el día a simular. Así el modelo nunca "ve" el día que
-tiene que predecir: es una separación honesta entre entrenamiento y evaluación.
+tiene que predecir: es una separación limpia entre entrenamiento y evaluación.
 
 ## Para fijar la idea
 

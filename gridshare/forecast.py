@@ -1,7 +1,7 @@
 """Forecast each house's net energy for an hour of the day.
 
 The market needs to know, ahead of time, which houses will have surplus solar and
-which will need energy. We forecast with a simple, honest baseline: the average
+which will need energy. We forecast with a simple, transparent baseline: the average
 generation and consumption for each house at each hour of the day, learned from
 history. It is easy to explain and a fair starting point; a stronger model could
 replace it behind the same interface.

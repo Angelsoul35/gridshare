@@ -2,11 +2,16 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from .chain.ledger import InMemoryLedgerClient, LedgerClient, house_id
 from .config import Settings, get_settings
 from .forecast import HourlyMeanForecaster
 from .generate import make_history, make_houses
 from .market import Order, clear_market
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 
 class GridShareService:
@@ -15,10 +20,21 @@ class GridShareService:
         settings: Settings | None = None,
         ledger: LedgerClient | None = None,
         days: int = 14,
+        houses: list[dict] | None = None,
+        history: pd.DataFrame | None = None,
     ) -> None:
         self.settings = settings or get_settings()
-        self.houses = make_houses(self.settings.n_houses, seed=42)
-        self.history = make_history(self.houses, days=days, seed=7)
+        # By default the neighbourhood is the synthetic generator; callers (e.g. the
+        # real-data benchmark) may inject a ready-made houses list and history frame
+        # so the same market, forecaster and ledger run on real meter data instead.
+        if history is not None:
+            if houses is None:
+                raise ValueError("pass houses alongside an injected history")
+            self.houses = houses
+            self.history = history
+        else:
+            self.houses = houses or make_houses(self.settings.n_houses, seed=42)
+            self.history = make_history(self.houses, days=days, seed=7)
         self.sim_day = int(self.history["day"].max())
         train = self.history[self.history["day"] < self.sim_day]
         self.forecaster = HourlyMeanForecaster().fit(train)

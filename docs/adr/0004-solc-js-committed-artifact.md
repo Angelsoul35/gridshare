@@ -41,4 +41,4 @@ compiler.
   bytecode shows up in a diff and can be reviewed.
 - **Trade-off.** The committed artifact must be regenerated with `make compile`
   whenever the contract changes, and the diff must be committed. This is a small,
-  explicit step and keeps the source and the artifact honest with each other.
+  explicit step and keeps the source and the artifact consistent with each other.
